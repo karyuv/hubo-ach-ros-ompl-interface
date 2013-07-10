@@ -1,0 +1,29 @@
+sensors:
+ - sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
+   sensor_type: point_cloud_sensor
+   point_cloud_topic: camera/depth/points
+   max_range: 5.0
+   frame_subsample: 1
+   point_subsample: 1
+   self_mask:
+       min_sensor_dist: .1
+       self_see_default_padding: .01
+       self_see_default_scale: 1.0
+       self_see_links:
+         - name: Body_LEP
+           padding: .1
+         - name: Body_LSR
+           padding: .1
+         - name: Body_LSY
+           padding: .1
+         - name: Body_LWP
+           padding: .1
+         - name: Body_REP
+           padding: .1
+         - name: Body_RSR
+           padding: .1
+         - name: Body_RSY
+           padding: .1
+         - name: Body_RWP
+           padding: .1
+        

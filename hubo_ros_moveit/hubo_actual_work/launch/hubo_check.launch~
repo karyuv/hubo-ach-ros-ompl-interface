@@ -1,0 +1,11 @@
+<launch>
+	<arg name="model" />
+	<arg name="gui" default="False" />
+	<param name="robot_description" textfile="/home/karthik/groovy_workspace/hubo-ach-tab/hubo-models/hubo_nav.urdf" />
+	<param name="use_gui" value="true"/>
+ <node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 odom_combined base_link_hubo 100" />
+
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node>
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+	<node name="rviz" pkg="rviz" type="rviz"  />
+</launch>

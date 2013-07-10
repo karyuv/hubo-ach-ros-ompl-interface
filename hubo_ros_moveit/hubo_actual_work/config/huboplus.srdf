@@ -1,0 +1,432 @@
+<?xml version="1.0" ?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="huboplus">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="left_arm">
+        <chain base_link="Body_Torso" tip_link="leftIndexDistal" />
+    </group>
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="home" group="left_arm">
+        <joint name="joint_3" value="0" />
+        <joint name="joint_4" value="0" />
+        <joint name="joint_5" value="0" />
+        <joint name="joint_6" value="0" />
+        <joint name="joint_7" value="0" />
+        <joint name="joint_8" value="0" />
+    </group_state>
+    <group_state name="hello" group="left_arm">
+        <joint name="joint_3" value="-1.2354" />
+        <joint name="joint_4" value="1.3943" />
+        <joint name="joint_5" value="0" />
+        <joint name="joint_6" value="-1.6742" />
+        <joint name="joint_7" value="0" />
+        <joint name="joint_8" value="0" />
+    </group_state>
+    <group_state name="stop" group="left_arm">
+        <joint name="joint_3" value="-0.5295" />
+        <joint name="joint_4" value="0.9884" />
+        <joint name="joint_5" value="-0.3883" />
+        <joint name="joint_6" value="-1.6742" />
+        <joint name="joint_7" value="-0.4589" />
+        <joint name="joint_8" value="0.1031" />
+    </group_state>
+    <group_state name="back" group="left_arm">
+        <joint name="joint_3" value="-0.5295" />
+        <joint name="joint_4" value="0.9884" />
+        <joint name="joint_5" value="-2.4355" />
+        <joint name="joint_6" value="-1.2562" />
+        <joint name="joint_7" value="-0.4589" />
+        <joint name="joint_8" value="0.8483" />
+    </group_state>
+    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+    <virtual_joint name="/world" type="fixed" parent_frame="/vir_world" child_link="Body_Torso" />
+    <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
+    <passive_joint name="joint_21" />
+    <passive_joint name="joint_22" />
+    <passive_joint name="joint_23" />
+    <passive_joint name="joint_24" />
+    <passive_joint name="joint_25" />
+    <passive_joint name="joint_26" />
+    <passive_joint name="joint_40" />
+    <passive_joint name="joint_41" />
+    <passive_joint name="joint_42" />
+    <passive_joint name="joint_43" />
+    <passive_joint name="joint_44" />
+    <passive_joint name="joint_45" />
+    <passive_joint name="joint_46" />
+    <passive_joint name="joint_47" />
+    <passive_joint name="joint_48" />
+    <passive_joint name="joint_49" />
+    <passive_joint name="joint_50" />
+    <passive_joint name="joint_51" />
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="Body_HNP" link2="Body_Hip" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LAP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LAR" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LHP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LHR" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LHY" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LKP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LSP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_LSR" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RAP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RAR" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RHP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RKP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_HNP" link2="Body_Torso" reason="Adjacent" />
+    <disable_collisions link1="Body_Hip" link2="Body_LHR" reason="Default" />
+    <disable_collisions link1="Body_Hip" link2="Body_LHY" reason="Adjacent" />
+    <disable_collisions link1="Body_Hip" link2="Body_LSP" reason="Never" />
+    <disable_collisions link1="Body_Hip" link2="Body_LSR" reason="Never" />
+    <disable_collisions link1="Body_Hip" link2="Body_RHR" reason="Default" />
+    <disable_collisions link1="Body_Hip" link2="Body_RHY" reason="Adjacent" />
+    <disable_collisions link1="Body_Hip" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_Hip" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_Hip" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_Hip" link2="Body_Torso" reason="Adjacent" />
+    <disable_collisions link1="Body_LAP" link2="Body_LAR" reason="Adjacent" />
+    <disable_collisions link1="Body_LAP" link2="Body_LKP" reason="Adjacent" />
+    <disable_collisions link1="Body_LAR" link2="Body_LKP" reason="Default" />
+    <disable_collisions link1="Body_LEP" link2="Body_LHP" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_LHR" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_LHY" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_LSP" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_LSR" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_LSY" reason="Adjacent" />
+    <disable_collisions link1="Body_LEP" link2="Body_LWP" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_LWY" reason="Adjacent" />
+    <disable_collisions link1="Body_LEP" link2="Body_RHP" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftIndexProximal" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftMiddleMedial" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftMiddleProximal" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="Body_LEP" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_LHR" reason="Adjacent" />
+    <disable_collisions link1="Body_LHP" link2="Body_LHY" reason="Default" />
+    <disable_collisions link1="Body_LHP" link2="Body_LKP" reason="Adjacent" />
+    <disable_collisions link1="Body_LHP" link2="Body_LSP" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_LSR" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_LSY" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_REP" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_LHP" link2="Body_Torso" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_LHY" reason="Adjacent" />
+    <disable_collisions link1="Body_LHR" link2="Body_LKP" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_LSP" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_LSR" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_LSY" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_REP" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_RWY" reason="Never" />
+    <disable_collisions link1="Body_LHR" link2="Body_Torso" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_LKP" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_LSP" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_LSR" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_LSY" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_REP" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_RWY" reason="Never" />
+    <disable_collisions link1="Body_LHY" link2="Body_Torso" reason="Never" />
+    <disable_collisions link1="Body_LKP" link2="Body_LSP" reason="Never" />
+    <disable_collisions link1="Body_LKP" link2="Body_LSR" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_LSR" reason="Adjacent" />
+    <disable_collisions link1="Body_LSP" link2="Body_LWY" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_REP" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_RHP" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_LSP" link2="Body_Torso" reason="Adjacent" />
+    <disable_collisions link1="Body_LSR" link2="Body_LSY" reason="Adjacent" />
+    <disable_collisions link1="Body_LSR" link2="Body_LWY" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="Body_REP" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="Body_RHP" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_LSR" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="Body_LWP" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="Body_RHP" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftIndexProximal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftMiddleMedial" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftMiddleProximal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="Body_LSY" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="Body_LWY" reason="Adjacent" />
+    <disable_collisions link1="Body_LWP" link2="leftIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftIndexProximal" reason="Adjacent" />
+    <disable_collisions link1="Body_LWP" link2="leftMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftMiddleMedial" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftMiddleProximal" reason="Adjacent" />
+    <disable_collisions link1="Body_LWP" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftPinkyProximal" reason="Adjacent" />
+    <disable_collisions link1="Body_LWP" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="Body_LWP" link2="leftRingProximal" reason="Adjacent" />
+    <disable_collisions link1="Body_LWY" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftIndexProximal" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftMiddleMedial" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftMiddleProximal" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="Body_LWY" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="Body_RAP" link2="Body_RAR" reason="Adjacent" />
+    <disable_collisions link1="Body_RAP" link2="Body_RKP" reason="Adjacent" />
+    <disable_collisions link1="Body_RAR" link2="Body_RKP" reason="Default" />
+    <disable_collisions link1="Body_REP" link2="Body_RHP" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="Body_RHR" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="Body_RHY" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="Body_RSY" reason="Adjacent" />
+    <disable_collisions link1="Body_REP" link2="Body_RWP" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="Body_RWY" reason="Adjacent" />
+    <disable_collisions link1="Body_REP" link2="rightIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightIndexProximal" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightMiddleMedial" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="Body_REP" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="Body_RHP" link2="Body_RHR" reason="Adjacent" />
+    <disable_collisions link1="Body_RHP" link2="Body_RHY" reason="Default" />
+    <disable_collisions link1="Body_RHP" link2="Body_RKP" reason="Adjacent" />
+    <disable_collisions link1="Body_RHP" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_RHP" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_RHP" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_RHP" link2="Body_Torso" reason="Never" />
+    <disable_collisions link1="Body_RHR" link2="Body_RHY" reason="Adjacent" />
+    <disable_collisions link1="Body_RHR" link2="Body_RKP" reason="Never" />
+    <disable_collisions link1="Body_RHR" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_RHR" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_RHR" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_RHR" link2="Body_Torso" reason="Never" />
+    <disable_collisions link1="Body_RHY" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_RHY" link2="Body_RSR" reason="Never" />
+    <disable_collisions link1="Body_RHY" link2="Body_RSY" reason="Never" />
+    <disable_collisions link1="Body_RHY" link2="Body_Torso" reason="Never" />
+    <disable_collisions link1="Body_RKP" link2="Body_RSP" reason="Never" />
+    <disable_collisions link1="Body_RSP" link2="Body_RSR" reason="Adjacent" />
+    <disable_collisions link1="Body_RSP" link2="Body_RWY" reason="Never" />
+    <disable_collisions link1="Body_RSP" link2="Body_Torso" reason="Adjacent" />
+    <disable_collisions link1="Body_RSR" link2="Body_RSY" reason="Adjacent" />
+    <disable_collisions link1="Body_RSR" link2="Body_RWY" reason="Never" />
+    <disable_collisions link1="Body_RSR" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="Body_RWP" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightIndexProximal" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightMiddleMedial" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="Body_RSY" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="Body_RWY" reason="Adjacent" />
+    <disable_collisions link1="Body_RWP" link2="rightIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="rightIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="rightIndexProximal" reason="Adjacent" />
+    <disable_collisions link1="Body_RWP" link2="rightMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="rightMiddleMedial" reason="Adjacent" />
+    <disable_collisions link1="Body_RWP" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="rightPinkyProximal" reason="Adjacent" />
+    <disable_collisions link1="Body_RWP" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="Body_RWP" link2="rightRingProximal" reason="Adjacent" />
+    <disable_collisions link1="Body_RWY" link2="rightIndexDistal" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightIndexMedial" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightIndexProximal" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightMiddleDistal" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightMiddleMedial" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="Body_RWY" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftIndexMedial" reason="Adjacent" />
+    <disable_collisions link1="leftIndexDistal" link2="leftIndexProximal" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftMiddleDistal" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftMiddleMedial" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftMiddleProximal" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftIndexDistal" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftIndexProximal" reason="Adjacent" />
+    <disable_collisions link1="leftIndexMedial" link2="leftMiddleDistal" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftMiddleMedial" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftMiddleProximal" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftIndexMedial" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftMiddleDistal" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftMiddleMedial" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftMiddleProximal" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftIndexProximal" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftMiddleMedial" reason="Adjacent" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftMiddleProximal" reason="Never" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftMiddleDistal" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftMiddleMedial" link2="leftMiddleProximal" reason="Adjacent" />
+    <disable_collisions link1="leftMiddleMedial" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="leftMiddleMedial" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="leftMiddleMedial" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="leftMiddleMedial" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftMiddleMedial" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftMiddleMedial" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftMiddleProximal" link2="leftPinkyDistal" reason="Never" />
+    <disable_collisions link1="leftMiddleProximal" link2="leftPinkyMedial" reason="Never" />
+    <disable_collisions link1="leftMiddleProximal" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="leftMiddleProximal" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftMiddleProximal" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftMiddleProximal" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftPinkyDistal" link2="leftPinkyMedial" reason="Adjacent" />
+    <disable_collisions link1="leftPinkyDistal" link2="leftPinkyProximal" reason="Never" />
+    <disable_collisions link1="leftPinkyDistal" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftPinkyDistal" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftPinkyDistal" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftPinkyMedial" link2="leftPinkyProximal" reason="Adjacent" />
+    <disable_collisions link1="leftPinkyMedial" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftPinkyMedial" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftPinkyMedial" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftPinkyMedial" link2="rightMiddleMedial" reason="Never" />
+    <disable_collisions link1="leftPinkyProximal" link2="leftRingDistal" reason="Never" />
+    <disable_collisions link1="leftPinkyProximal" link2="leftRingMedial" reason="Never" />
+    <disable_collisions link1="leftPinkyProximal" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftRingDistal" link2="leftRingMedial" reason="Adjacent" />
+    <disable_collisions link1="leftRingDistal" link2="leftRingProximal" reason="Never" />
+    <disable_collisions link1="leftRingMedial" link2="leftRingProximal" reason="Adjacent" />
+    <disable_collisions link1="rightIndexDistal" link2="rightIndexMedial" reason="Adjacent" />
+    <disable_collisions link1="rightIndexDistal" link2="rightIndexProximal" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightMiddleDistal" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightMiddleMedial" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightIndexDistal" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightIndexProximal" reason="Adjacent" />
+    <disable_collisions link1="rightIndexMedial" link2="rightMiddleDistal" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightMiddleMedial" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightIndexMedial" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightMiddleDistal" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightMiddleMedial" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightIndexProximal" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightMiddleDistal" link2="rightMiddleMedial" reason="Adjacent" />
+    <disable_collisions link1="rightMiddleDistal" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="rightMiddleDistal" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="rightMiddleDistal" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="rightMiddleDistal" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightMiddleDistal" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightMiddleDistal" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightMiddleMedial" link2="rightPinkyDistal" reason="Never" />
+    <disable_collisions link1="rightMiddleMedial" link2="rightPinkyMedial" reason="Never" />
+    <disable_collisions link1="rightMiddleMedial" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="rightMiddleMedial" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightMiddleMedial" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightMiddleMedial" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightPinkyDistal" link2="rightPinkyMedial" reason="Adjacent" />
+    <disable_collisions link1="rightPinkyDistal" link2="rightPinkyProximal" reason="Never" />
+    <disable_collisions link1="rightPinkyDistal" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightPinkyDistal" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightPinkyDistal" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightPinkyMedial" link2="rightPinkyProximal" reason="Adjacent" />
+    <disable_collisions link1="rightPinkyMedial" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightPinkyMedial" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightPinkyMedial" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightPinkyProximal" link2="rightRingDistal" reason="Never" />
+    <disable_collisions link1="rightPinkyProximal" link2="rightRingMedial" reason="Never" />
+    <disable_collisions link1="rightPinkyProximal" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightRingDistal" link2="rightRingMedial" reason="Adjacent" />
+    <disable_collisions link1="rightRingDistal" link2="rightRingProximal" reason="Never" />
+    <disable_collisions link1="rightRingMedial" link2="rightRingProximal" reason="Adjacent" />
+</robot>

@@ -1,0 +1,215 @@
+/* Standard Stuff */
+#include <string.h>
+#include <stdio.h>
+#include <ros/ros.h>
+/* Required Hubo Headers */
+#include <hubo.h>
+#include <sensor_msgs/JointState.h>
+/* For Ach IPC */
+#include <errno.h>
+#include <fcntl.h>
+#include <assert.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <math.h>
+#include <inttypes.h>
+#include "ach.h"
+#include <joint_send/joint_push.h> 
+#include <trajectory_msgs/JointTrajectory.h>
+/* Ach Channel IDs */
+ach_channel_t chan_hubo_ref;      // Feed-Forward (Reference)
+ach_channel_t chan_hubo_state;    // Feed-Back (State)
+/* Create initial structures to read and write from */ 
+struct hubo_ref H_ref;
+struct hubo_state H_state;
+//Initialize publishers and instance of newly created message
+ros::Publisher encoder_pub;
+joint_send::joint_push msg;
+float lo=0.0;
+int i=0;
+void rviz2hubo(const sensor_msgs::JointState::ConstPtr& pos)
+{
+
+std::cout<<"LEB::"<<pos->position[0]<<"\n";
+std::cout<<"LSP::"<<pos->position[1]<<"\n";
+H_ref.ref[LSP] = pos->position[0];
+H_ref.ref[LSR] = pos->position[1];
+H_ref.ref[LSY] = pos->position[2];
+H_ref.ref[LEB] = pos->position[3];
+H_ref.ref[LWY] = pos->position[4];
+H_ref.ref[LWP] = pos->position[5];
+
+ ach_put( &chan_hubo_ref, &H_ref, sizeof(H_ref));
+
+
+}
+
+
+
+
+void hubo_control_fromrviz()
+{
+    H_ref.ref[REB] = -0.2;//set position values to the specified joint
+    H_ref.ref[RSP] = 0.1;
+
+  
+  /* Write to the feed-forward channel */
+    ach_put( &chan_hubo_ref, &H_ref, sizeof(H_ref));
+}
+
+
+
+void record_encoder_rviz()
+{
+    msg.enco_d[0] = H_state.joint[RHY].pos;//RHY
+   // printf("Joint = %f\r\n",msg.enco_d[0]);
+
+ msg.enco_d[1] = H_state.joint[RHR].pos;//RHR
+   // printf("Joint = %f\r\n",msg.enco_d[1]);
+
+msg.enco_d[2] = H_state.joint[RHP].pos;//RHP
+   // printf("Joint = %f\r\n",msg.enco_d[2]);
+
+msg.enco_d[3] = H_state.joint[RKN].pos;//RKP
+  //  printf("Joint = %f\r\n",msg.enco_d[3]);
+
+msg.enco_d[4] = H_state.joint[RAP].pos;//RAP
+  //  printf("Joint = %f\r\n",msg.enco_d[4]);
+
+msg.enco_d[5] = H_state.joint[RAR].pos;//RAR
+   // printf("Joint = %f\r\n",msg.enco_d[5]);
+
+msg.enco_d[6] = H_state.joint[LHY].pos;//LHY
+  //  printf("Joint = %f\r\n",msg.enco_d[6]);
+
+msg.enco_d[7] = H_state.joint[LHR].pos;//LHR
+  //  printf("Joint = %f\r\n",msg.enco_d[7]);
+
+msg.enco_d[8] = H_state.joint[LHP].pos;//LHP
+  //  printf("Joint = %f\r\n",msg.enco_d[8]);
+
+msg.enco_d[9] = H_state.joint[LKN].pos;//LKP(urd naming)
+   // printf("Joint = %f\r\n",msg.enco_d[9]);
+   
+msg.enco_d[10] = H_state.joint[LAP].pos;//LAP
+   // printf("Joint = %f\r\n",msg.enco_d[10]);
+
+msg.enco_d[11] = H_state.joint[LAR].pos;//LAR
+   // printf("Joint = %f\r\n",msg.enco_d[11]);
+
+msg.enco_d[12] = H_state.joint[WST].pos;//HPY
+   // printf("Joint_waist= %f\r\n",msg.enco_d[12]);
+
+
+msg.enco_d[13] = H_state.joint[LSP].pos;//LSP
+   // printf("Joint = %f\r\n",msg.enco_d[13]);
+
+msg.enco_d[14] = H_state.joint[LSR].pos;//LSR
+   // printf("Joint = %f\r\n",msg.enco_d[14]);
+
+msg.enco_d[15] = H_state.joint[LSY].pos;//LSY
+    //printf("Joint = %f\r\n",msg.enco_d[15]);
+
+msg.enco_d[16] = H_state.joint[LEB].pos;//LEB
+   // printf("Joint = %f\r\n",msg.enco_d[16]);
+
+
+msg.enco_d[17] = H_state.joint[LWY].pos;//LWY
+   // printf("Joint = %f\r\n",msg.enco_d[17]);
+
+
+msg.enco_d[18] = H_state.joint[LWP].pos;//LWP
+    //printf("Joint = %f\r\n",msg.enco_d[18]);
+
+msg.enco_d[19] = H_state.joint[RSP].pos;//RSP
+   // printf("Joint = %f\r\n",msg.enco_d[19]);
+
+msg.enco_d[20] = H_state.joint[RSR].pos;//RSR
+   // printf("Joint = %f\r\n",msg.enco_d[20]);
+
+msg.enco_d[21] = H_state.joint[RSY].pos;//RSY
+    //printf("Joint = %f\r\n",msg.enco_d[21]);
+
+msg.enco_d[22] = H_state.joint[REB].pos;//REP(urdf naming)
+   // printf("Joint = %f\r\n",msg.enco_d[22]);
+
+msg.enco_d[23] = H_state.joint[RWY].pos;//RWY
+    //printf("Joint = %f\r\n",msg.enco_d[23]);
+
+
+msg.enco_d[24] = H_state.joint[RWP].pos;//RWP
+   // printf("Joint = %f\r\n",msg.enco_d[24]);
+
+msg.header.stamp = ros::Time::now();
+encoder_pub.publish(msg);
+    /* Write to the feed-forward channel */
+   
+}
+
+int main (int argc, char** argv)
+{
+
+ros::init (argc, argv, "hubo_ach_ros");
+ros::NodeHandle nh;
+ros::Subscriber sub=nh.subscribe("/command",100,rviz2hubo);
+ros::Rate loop_rate(100);
+encoder_pub = nh.advertise<joint_send::joint_push>("hubo_encoder", 100);
+//set the size of the encoder message and also initializing the joint values to zero
+msg.enco_d.resize(25);
+msg.header.frame_id = "/hubo_out";
+msg.enco_d[0] = 0.0;
+msg.enco_d[1]=0.0;
+msg.enco_d[2] = 0.0;
+msg.enco_d[3]=0.0;
+msg.enco_d[4] = 0.0;
+msg.enco_d[5]=0.0;
+msg.enco_d[6] = 0.0;
+msg.enco_d[7]=0.0;
+msg.enco_d[8] = 0.0;
+msg.enco_d[9]=0.0;
+msg.enco_d[10] = 0.0;
+msg.enco_d[11]=0.0;
+msg.enco_d[12] = 0.0;
+msg.enco_d[13]=0.0;
+msg.enco_d[14] = 0.0;
+msg.enco_d[15]=0.0;
+msg.enco_d[16] = 0.0;
+msg.enco_d[17]=0.0;
+msg.enco_d[18] = 0.0;
+msg.enco_d[19]=0.0;
+msg.enco_d[20] = 0.0;
+msg.enco_d[21] = 0.0;
+msg.enco_d[22]=0.0;
+msg.enco_d[23] = 0.0;
+msg.enco_d[24]=0.0;
+
+
+//initialize ach channel with hubo
+int r = ach_open(&chan_hubo_ref, HUBO_CHAN_REF_NAME , NULL);
+assert( ACH_OK == r );
+r = ach_open(&chan_hubo_state, HUBO_CHAN_STATE_NAME , NULL);
+assert( ACH_OK == r );   
+memset( &H_ref,   0, sizeof(H_ref));
+memset( &H_state, 0, sizeof(H_state));
+
+    /* for size check */
+    size_t fs;
+
+    
+   
+ 
+while(nh.ok())
+{
+/* Get the current feed-forward (state) */
+ r = ach_get( &chan_hubo_state, &H_state, sizeof(H_state), &fs, NULL, ACH_O_LAST );
+    if(ACH_OK != r) {
+        assert( sizeof(H_state) == fs );
+    }
+record_encoder_rviz();
+ros::spinOnce();
+loop_rate.sleep();
+}
+return 0;
+}

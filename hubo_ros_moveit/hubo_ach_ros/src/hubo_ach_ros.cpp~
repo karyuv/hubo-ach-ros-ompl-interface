@@ -1,0 +1,255 @@
+/* Standard Stuff */
+#include <string.h>
+#include <stdio.h>
+#include <ros/ros.h>
+/* Required Hubo Headers */
+#include <hubo.h>
+#include <sensor_msgs/JointState.h>
+#include <tf/transform_broadcaster.h>
+/* For Ach IPC */
+#include <errno.h>
+#include <fcntl.h>
+#include <assert.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <math.h>
+#include <inttypes.h>
+#include "ach.h" 
+#include <trajectory_msgs/JointTrajectory.h>
+/* Ach Channel IDs */
+ach_channel_t chan_hubo_ref;      // Feed-Forward (Reference)
+ach_channel_t chan_hubo_state;    // Feed-Back (State)
+/* Create initial structures to read and write from */ 
+struct hubo_ref H_ref;
+struct hubo_state H_state;
+//Initialize publishers and instance of newly created message
+ros::Publisher joint_pub;
+sensor_msgs::JointState joint_state;
+double a[6]={0.0,0.0,0.0,0.0,0.0,0.0};
+float lo=0.0;
+int i=0;
+void rviz2hubo(const sensor_msgs::JointState::ConstPtr& pos)
+{
+
+std::cout<<"LEB::"<<pos->position[0]<<"\n";
+std::cout<<"LSP::"<<pos->position[1]<<"\n";
+if(a[0]==pos->position[0] && a[1]==pos->position[1] && a[2]==pos->position[2] && a[3]==pos->position[3] && a[4]==pos->position[4] && a[5]==pos->position[5])
+{
+std::cout<<"not happening\n";
+}
+else
+{
+H_ref.ref[LSP] = pos->position[0];
+H_ref.ref[LSR] = pos->position[1];
+H_ref.ref[LSY] = pos->position[2];
+H_ref.ref[LEB] = pos->position[3];
+H_ref.ref[LWY] = pos->position[4];
+H_ref.ref[LWP] = pos->position[5];
+
+H_ref.ref[RHY]= H_state.joint[RHY].pos;
+H_ref.ref[RHR]= H_state.joint[RHR].pos;
+H_ref.ref[RHP]= H_state.joint[RHP].pos;
+H_ref.ref[RKN]= H_state.joint[RKN].pos;
+H_ref.ref[RAR]= H_state.joint[RAR].pos;
+
+H_ref.ref[LHY]= H_state.joint[LHY].pos;
+H_ref.ref[LHR]= H_state.joint[LHR].pos;
+H_ref.ref[LHP]= H_state.joint[LHP].pos;
+H_ref.ref[LKN]= H_state.joint[LKN].pos;
+H_ref.ref[LAR]= H_state.joint[LAR].pos;
+
+H_ref.ref[RSP]= H_state.joint[RSP].pos;
+H_ref.ref[RSR]= H_state.joint[RSR].pos;
+H_ref.ref[RSY]= H_state.joint[RSY].pos;
+H_ref.ref[REB]= H_state.joint[REB].pos;
+H_ref.ref[RWY]= H_state.joint[RWY].pos;
+H_ref.ref[RWP]= H_state.joint[RWP].pos;
+H_ref.ref[RSP]= H_state.joint[RSP].pos;
+
+a[0]=H_ref.ref[LSP];
+a[1]=H_ref.ref[LSR];
+a[2]=H_ref.ref[LSY];
+a[3]=H_ref.ref[LEB];
+a[4]= H_ref.ref[LWY];
+a[5]=H_ref.ref[LWP] ;
+ach_put( &chan_hubo_ref, &H_ref, sizeof(H_ref));
+}
+
+
+
+}
+
+
+
+
+void hubo_control_fromrviz()
+{
+    H_ref.ref[REB] = -0.2;//set position values to the specified joint
+    H_ref.ref[RSP] = 0.1;
+
+  
+  /* Write to the feed-forward channel */
+    ach_put( &chan_hubo_ref, &H_ref, sizeof(H_ref));
+}
+
+
+
+void record_encoder_rviz()
+{
+ joint_state.name[0]="joint_46" ; 
+ joint_state.position[0] = H_state.joint[RHY].pos;//RHY
+   // printf("Joint = %f\r\n",msg.enco_d[0]);
+joint_state.name[1]="joint_47" ;
+ joint_state.position[1] = H_state.joint[RHR].pos;//RHR
+   // printf("Joint = %f\r\n",msg.enco_d[1]);
+joint_state.name[2]="joint_48" ;
+joint_state.position[2] = -1.1538;//H_state.joint[RHP].pos;//RHP
+   // printf("Joint = %f\r\n",msg.enco_d[2]);
+joint_state.name[3]="joint_49" ;
+joint_state.position[3] =1.0853;// H_state.joint[RKN].pos;//RKP
+  //  printf("Joint = %f\r\n",msg.enco_d[3]);
+joint_state.name[4]="joint_50" ;
+joint_state.position[4] = H_state.joint[RAP].pos;//RAP
+  //  printf("Joint = %f\r\n",msg.enco_d[4]);
+joint_state.name[5]="joint_51" ;
+joint_state.position[5] = H_state.joint[RAR].pos;//RAR
+   // printf("Joint = %f\r\n",msg.enco_d[5]);
+joint_state.name[6]="joint_40" ;
+joint_state.position[6] = H_state.joint[LHY].pos;//LHY
+  //  printf("Joint = %f\r\n",msg.enco_d[6]);
+joint_state.name[7]="joint_41" ;
+joint_state.position[7] = H_state.joint[LHR].pos;//LHR
+  //  printf("Joint = %f\r\n",msg.enco_d[7]);
+joint_state.name[8]="joint_42" ;
+joint_state.position[8] = -1.1538;//H_state.joint[LHP].pos;//LHP
+  //  printf("Joint = %f\r\n",msg.enco_d[8]);
+joint_state.name[9]="joint_43" ;
+joint_state.position[9] =1.0853;//  H_state.joint[LKN].pos;//LKP(urd naming)
+   // printf("Joint = %f\r\n",msg.enco_d[9]);
+   joint_state.name[10]="joint_44"; 
+joint_state.position[10] = H_state.joint[LAP].pos;//LAP
+   // printf("Joint = %f\r\n",msg.enco_d[10]);
+joint_state.name[11]="joint_45" ;
+joint_state.position[11] = H_state.joint[LAR].pos;//LAR
+   // printf("Joint = %f\r\n",msg.enco_d[11]);
+joint_state.name[12]="joint_39" ;
+joint_state.position[12] = H_state.joint[WST].pos;//HPY
+   // printf("Joint_waist= %f\r\n",msg.enco_d[12]);
+joint_state.name[13]="joint_3" ;
+joint_state.position[13] = H_state.joint[LSP].pos;//LSP
+   // printf("Joint = %f\r\n",msg.enco_d[13]);
+joint_state.name[14]="joint_4" ;
+joint_state.position[14] = H_state.joint[LSR].pos;//LSR
+   // printf("Joint = %f\r\n",msg.enco_d[14]);
+joint_state.name[15]="joint_5" ;
+joint_state.position[15] = H_state.joint[LSY].pos;//LSY
+    //printf("Joint = %f\r\n",msg.enco_d[15]);
+joint_state.name[16]="joint_6" ;
+joint_state.position[16] = H_state.joint[LEB].pos;//LEB
+   // printf("Joint = %f\r\n",msg.enco_d[16]);
+
+joint_state.name[17]="joint_7" ;
+joint_state.position[17] = H_state.joint[LWY].pos;//LWY
+   // printf("Joint = %f\r\n",msg.enco_d[17]);
+
+joint_state.name[18]="joint_8" ;
+joint_state.position[18] = H_state.joint[LWP].pos;//LWP
+    //printf("Joint = %f\r\n",msg.enco_d[18]);
+joint_state.name[19]="joint_21" ;
+joint_state.position[19] = H_state.joint[RSP].pos;//RSP
+   // printf("Joint = %f\r\n",msg.enco_d[19]);
+joint_state.name[20]="joint_22" ;
+joint_state.position[20] = H_state.joint[RSR].pos;//RSR
+   // printf("Joint = %f\r\n",msg.enco_d[20]);
+joint_state.name[21]="joint_23" ;
+joint_state.position[21] = H_state.joint[RSY].pos;//RSY
+    //printf("Joint = %f\r\n",msg.enco_d[21]);
+joint_state.name[22]="joint_24" ;
+joint_state.position[22] = H_state.joint[REB].pos;//REP(urdf naming)
+   // printf("Joint = %f\r\n",msg.enco_d[22]);
+joint_state.name[23]="joint_25" ;
+joint_state.position[23] = H_state.joint[RWY].pos;//RWY
+    //printf("Joint = %f\r\n",msg.enco_d[23]);
+
+joint_state.name[24]="joint_26" ;
+joint_state.position[24] = H_state.joint[RWP].pos;//RWP
+   // printf("Joint = %f\r\n",msg.enco_d[24]);
+
+joint_state.header.stamp = ros::Time::now();
+joint_state.header.frame_id="Body_Torso";
+joint_pub.publish(joint_state);
+    /* Write to the feed-forward channel */
+    /* Write to the feed-forward channel */
+   
+}
+
+int main (int argc, char** argv)
+{
+
+ros::init (argc, argv, "hubo_ach_ros");
+ros::NodeHandle nh;
+ros::Subscriber sub=nh.subscribe("/command",100,rviz2hubo);
+ros::Rate loop_rate(100);
+joint_pub = nh.advertise<sensor_msgs::JointState>("joint_states", 100);
+//set the size of the encoder message and also initializing the joint values to zero
+joint_state.name.resize(25);
+joint_state.position.resize(25);
+tf::TransformBroadcaster broadcaster;
+float c=0.0;
+
+ geometry_msgs::TransformStamped odom_trans;
+    
+    odom_trans.header.frame_id = "odom";
+   odom_trans.child_frame_id = "Body_Torso";
+//initialize ach channel with hubo
+int r = ach_open(&chan_hubo_ref, HUBO_CHAN_REF_NAME , NULL);
+assert( ACH_OK == r );
+r = ach_open(&chan_hubo_state, HUBO_CHAN_STATE_NAME , NULL);
+assert( ACH_OK == r );   
+memset( &H_ref,   0, sizeof(H_ref));
+memset( &H_state, 0, sizeof(H_state));
+
+    /* for size check */
+    size_t fs;
+
+    const double degree = M_PI/180;
+
+    // robot state
+    double tilt = 0, tinc = degree, swivel=0, angle=0, height=0, hinc=0.005;
+    
+   
+ 
+while(nh.ok())
+{
+/* Get the current feed-forward (state) */
+ r = ach_get( &chan_hubo_state, &H_state, sizeof(H_state), &fs, NULL, ACH_O_LAST );
+    if(ACH_OK != r) {
+        assert( sizeof(H_state) == fs );
+    }
+c=c+0.003;
+odom_trans.header.stamp = ros::Time::now();
+   odom_trans.transform.translation.x = 0.25;//cos(angle)*2;
+        odom_trans.transform.translation.y =0.78;// sin(angle)*2;
+        odom_trans.transform.translation.z = 0.12;
+        odom_trans.transform.rotation = tf::createQuaternionMsgFromYaw(0);
+
+        //send the joint state and transform
+     
+        broadcaster.sendTransform(odom_trans);
+
+tilt += tinc;
+        if (tilt<-.5 || tilt>0) tinc *= -1;
+        height += hinc;
+        if (height>.2 || height<0) hinc *= -1;
+        swivel += degree;
+        angle += degree/4;
+
+
+record_encoder_rviz();
+ros::spinOnce();
+loop_rate.sleep();
+}
+return 0;
+}

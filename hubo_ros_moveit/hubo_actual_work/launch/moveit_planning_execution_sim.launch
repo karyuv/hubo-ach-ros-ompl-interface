@@ -1,0 +1,24 @@
+<launch>
+ # The planning and execution components of MoveIt! configured to run
+ # using a simulated ROS-Industrial node
+
+ #-------------------------------------
+ # These actions are normally handled in the "real" robot's bringup launch file
+ #
+ # load the URDF
+ <param name="robot_description" textfile="/home/karthik/groovy_workspace/hubo-ach-tab/hubo-models/hubo_use_urdf.urdf" />
+ # run the robot simulator and action interface nodes
+ <include file="$(find industrial_robot_simulator)/launch/robot_interface_simulator.launch" />
+
+ # publish the robot state (tf transforms)
+ <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+ #-------------------------------------
+<rosparam param="controller_joint_names">['joint_3','joint_4','joint_5','joint_6','joint_7','joint_8']</rosparam>
+
+
+ <include file="$(find hubo_actual_work)/launch/move_group.launch">
+  <arg name="publish_monitored_planning_scene" value="true" />
+ </include>
+
+ <include file="$(find hubo_actual_work)/launch/moveit_rviz.launch"/>
+</launch>
